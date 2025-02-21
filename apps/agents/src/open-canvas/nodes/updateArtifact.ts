@@ -12,8 +12,9 @@ import {
   createContextDocumentMessages,
   ensureStoreInConfig,
   formatReflections,
-  getModelConfig,
-  getModelFromConfig,
+  // getModelConfig,
+  // getModelFromConfig,
+  getWriterModel,
   isUsingO1MiniModel,
 } from "../../utils.js";
 import { UPDATE_HIGHLIGHTED_ARTIFACT_PROMPT } from "../prompts.js";
@@ -29,27 +30,29 @@ export const updateArtifact = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const { modelProvider, modelName } = getModelConfig(config);
-  let smallModel: Awaited<ReturnType<typeof getModelFromConfig>>;
-  if (modelProvider.includes("openai") || modelName.includes("3-5-sonnet")) {
-    // Custom model is intelligent enough for updating artifacts
-    smallModel = await getModelFromConfig(config, {
-      temperature: 0,
-    });
-  } else {
-    // Custom model is not intelligent enough for updating artifacts
-    smallModel = await getModelFromConfig(
-      {
-        ...config,
-        configurable: {
-          customModelName: "gpt-4o",
-        },
-      },
-      {
-        temperature: 0,
-      }
-    );
-  }
+  // const { modelProvider, modelName } = getModelConfig(config);
+  // let smallModel: Awaited<ReturnType<typeof getModelFromConfig>>;
+  const smallModel = getWriterModel(config, { temperature: 0 });
+
+  // if (modelProvider.includes("openai") || modelName.includes("3-5-sonnet")) {
+  //   // Custom model is intelligent enough for updating artifacts
+  //   smallModel = await getModelFromConfig(config, {
+  //     temperature: 0,
+  //   });
+  // } else {
+  //   // Custom model is not intelligent enough for updating artifacts
+  //   smallModel = await getModelFromConfig(
+  //     {
+  //       ...config,
+  //       configurable: {
+  //         customModelName: "gpt-4o",
+  //       },
+  //     },
+  //     {
+  //       temperature: 0,
+  //     }
+  //   );
+  // }
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

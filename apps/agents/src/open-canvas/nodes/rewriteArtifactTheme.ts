@@ -13,7 +13,8 @@ import {
   ensureStoreInConfig,
   formatReflections,
   getModelConfig,
-  getModelFromConfig,
+  // getModelFromConfig,
+  getWriterModel,
 } from "../../utils.js";
 import {
   ADD_EMOJIS_TO_ARTIFACT_PROMPT,
@@ -33,7 +34,8 @@ export const rewriteArtifactTheme = async (
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
   const { modelName } = getModelConfig(config);
-  const smallModel = await getModelFromConfig(config);
+  const smallModel = getWriterModel(config);
+  // const smallModel = await getModelFromConfig(config);
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

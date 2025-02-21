@@ -27,6 +27,7 @@ import {
   LANGCHAIN_USER_ONLY_MODELS,
 } from "@opencanvas/shared/models";
 import { createClient, Session, User } from "@supabase/supabase-js";
+import { ChatWriter } from "@opencanvas/shared/langchain-writer/chat_models";
 
 export const formatReflections = (
   reflections: Reflections,
@@ -210,6 +211,13 @@ export const getModelConfig = (
     modelConfig,
   };
 
+  if (customModelName.includes("palmyra-")) {
+    return {
+      ...providerConfig,
+      modelProvider: "writer",
+    };
+  }
+
   if (
     customModelName.includes("gpt-") ||
     customModelName.includes("o1") ||
@@ -338,6 +346,38 @@ export function isUsingO1MiniModel(config: LangGraphRunnableConfig) {
   return modelName.includes("o1-mini");
 }
 
+// TODO: Replace this to return the model instance directly.
+
+export function getWriterModel(
+  config: LangGraphRunnableConfig,
+  extra?: {
+    temperature?: number;
+    maxTokens?: number;
+    isToolCalling?: boolean;
+  }
+) {
+  console.log("++++ getWriterModel config: ", config);
+  const {
+    // modelName,
+    // modelProvider,
+    // apiKey,
+    // baseUrl,
+    modelConfig,
+  } = getModelConfig(config, {
+    isToolCalling: extra?.isToolCalling,
+  });
+  const { temperature = 0.5, maxTokens } = {
+    temperature: modelConfig?.temperatureRange.current,
+    maxTokens: modelConfig?.maxTokens.current,
+    ...extra,
+  };
+
+  return new ChatWriter({
+    maxTokens,
+    temperature,
+  });
+}
+
 export async function getModelFromConfig(
   config: LangGraphRunnableConfig,
   extra?: {
@@ -356,6 +396,8 @@ export async function getModelFromConfig(
   } = getModelConfig(config, {
     isToolCalling: extra?.isToolCalling,
   });
+
+  console.log("===== getModelFromConfig config: ", config);
   const { temperature = 0.5, maxTokens } = {
     temperature: modelConfig?.temperatureRange.current,
     maxTokens: modelConfig?.maxTokens.current,
@@ -543,6 +585,9 @@ export async function createContextDocumentMessages(
 
   let contextDocumentMessages: Record<string, any>[] = [];
   if (modelProvider === "openai") {
+    contextDocumentMessages =
+      await createContextDocumentMessagesOpenAI(documents);
+  } else if (modelProvider === "writer") {
     contextDocumentMessages =
       await createContextDocumentMessagesOpenAI(documents);
   } else if (modelProvider === "anthropic") {

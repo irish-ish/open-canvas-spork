@@ -1,4 +1,5 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+// import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatWriter } from "@opencanvas/shared/langchain-writer/chat_models";
 import {
   type LangGraphRunnableConfig,
   StateGraph,
@@ -47,8 +48,8 @@ export const reflect = async (
     }),
   };
 
-  const model = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20240620",
+  const model = new ChatWriter({
+    // model: "claude-3-5-sonnet-20240620",
     temperature: 0,
   }).bindTools([generateReflectionTool], {
     tool_choice: "generate_reflections",

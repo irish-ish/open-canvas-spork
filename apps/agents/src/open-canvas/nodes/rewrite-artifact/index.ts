@@ -14,7 +14,8 @@ import {
   createContextDocumentMessages,
   getFormattedReflections,
   getModelConfig,
-  getModelFromConfig,
+  // getModelFromConfig,
+  getWriterModel,
   isUsingO1MiniModel,
   optionallyGetSystemPromptFromConfig,
 } from "../../../utils.js";
@@ -30,9 +31,12 @@ export const rewriteArtifact = async (
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
   const { modelName } = getModelConfig(config);
-  const smallModelWithConfig = (await getModelFromConfig(config)).withConfig({
+  const smallModelWithConfig = getWriterModel(config).withConfig({
     runName: "rewrite_artifact_model_call",
   });
+  // const smallModelWithConfig = (await getModelFromConfig(config)).withConfig({
+  //   runName: "rewrite_artifact_model_call",
+  // });
   const memoriesAsString = await getFormattedReflections(config);
   const { currentArtifactContent, recentHumanMessage } = validateState(state);
 

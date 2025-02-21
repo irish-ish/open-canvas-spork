@@ -8,8 +8,9 @@ import {
 import { OpenCanvasGraphAnnotation } from "../../state.js";
 import {
   formatArtifactContentWithTemplate,
-  getModelFromConfig,
+  // getModelFromConfig,
   createContextDocumentMessages,
+  getWriterModel,
 } from "../../../utils.js";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { getArtifactContent } from "@opencanvas/shared/utils/artifacts";
@@ -63,10 +64,14 @@ async function dynamicDeterminePathFunc({
     ? "rewriteArtifact"
     : "generateArtifact";
 
-  const model = await getModelFromConfig(config, {
+  const model = getWriterModel(config, {
     temperature: 0,
     isToolCalling: true,
   });
+  // const model = await getModelFromConfig(config, {
+  //   temperature: 0,
+  //   isToolCalling: true,
+  // });
 
   const schema = z.object({
     route: z

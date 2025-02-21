@@ -1,14 +1,15 @@
 import {
   createContextDocumentMessages,
-  getModelConfig,
-  getModelFromConfig,
+  // getModelConfig,
+  // getModelFromConfig,
+  getWriterModel,
   isUsingO1MiniModel,
 } from "../../utils.js";
-import { BaseLanguageModelInput } from "@langchain/core/language_models/base";
-import { AIMessageChunk } from "@langchain/core/messages";
-import { RunnableBinding } from "@langchain/core/runnables";
+// import { BaseLanguageModelInput } from "@langchain/core/language_models/base";
+// import { AIMessageChunk } from "@langchain/core/messages";
+// import { RunnableBinding } from "@langchain/core/runnables";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { ConfigurableChatModelCallOptions } from "langchain/chat_models/universal";
+// import { ConfigurableChatModelCallOptions } from "langchain/chat_models/universal";
 import {
   getArtifactContent,
   isArtifactMarkdownContent,
@@ -45,35 +46,45 @@ export const updateHighlightedText = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const { modelProvider, modelName } = getModelConfig(config);
-  let model: RunnableBinding<
-    BaseLanguageModelInput,
-    AIMessageChunk,
-    ConfigurableChatModelCallOptions
-  >;
-  if (modelProvider.includes("openai") || modelName.includes("3-5-sonnet")) {
-    // Custom model is intelligent enough for updating artifacts
-    model = (
-      await getModelFromConfig(config, {
-        temperature: 0,
-      })
-    ).withConfig({ runName: "update_highlighted_markdown" });
-  } else {
-    // Custom model is not intelligent enough for updating artifacts
-    model = (
-      await getModelFromConfig(
-        {
-          ...config,
-          configurable: {
-            customModelName: "gpt-4o",
-          },
-        },
-        {
-          temperature: 0,
-        }
-      )
-    ).withConfig({ runName: "update_highlighted_markdown" });
-  }
+  // const { modelProvider, modelName } = getModelConfig(config);
+
+  const model = getWriterModel(config, { temperature: 0 }).withConfig({
+    runName: "update_highlighted_markdown",
+  });
+
+  // TODO: Review and possible tweak this
+  // let model: RunnableBinding<
+  //   BaseLanguageModelInput,
+  //   AIMessageChunk,
+  //   ConfigurableChatModelCallOptions
+  // >;
+  // if (
+  //   modelProvider.includes("openai") ||
+  //   modelName.includes("3-5-sonnet") ||
+  //   modelProvider.includes("writer")
+  // ) {
+  //   // Custom model is intelligent enough for updating artifacts
+  //   model = (
+  //     await getModelFromConfig(config, {
+  //       temperature: 0,
+  //     })
+  //   ).withConfig({ runName: "update_highlighted_markdown" });
+  // } else {
+  //   // Custom model is not intelligent enough for updating artifacts
+  //   model = (
+  //     await getModelFromConfig(
+  //       {
+  //         ...config,
+  //         configurable: {
+  //           customModelName: "gpt-4o",
+  //         },
+  //       },
+  //       {
+  //         temperature: 0,
+  //       }
+  //     )
+  //   ).withConfig({ runName: "update_highlighted_markdown" });
+  // }
 
   const currentArtifactContent = state.artifact
     ? getArtifactContent(state.artifact)

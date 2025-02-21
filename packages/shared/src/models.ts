@@ -1,5 +1,31 @@
 import { CustomModelConfig, ModelConfigurationParams } from "./types.js";
 
+/**
+ * Writer models
+ */
+const WRITER_MODELS: ModelConfigurationParams[] = [
+  {
+    name: "palmyra-x-004",
+    label: "Palmyra X 004",
+    config: {
+      provider: "writer",
+      temperatureRange: {
+        min: 0,
+        max: 1,
+        default: 0.5,
+        current: 0.5,
+      },
+      maxTokens: {
+        min: 1,
+        max: 8192,
+        default: 4096,
+        current: 4096,
+      },
+    },
+    isNew: true,
+  },
+];
+
 const AZURE_MODELS: ModelConfigurationParams[] = [
   {
     name: "azure/gpt-4o-mini",
@@ -386,7 +412,6 @@ const GEMINI_MODELS: ModelConfigurationParams[] = [
 
 export const LANGCHAIN_USER_ONLY_MODELS = [
   "o1",
-  "gpt-4o",
   "claude-3-5-sonnet-latest",
   "gemini-2.0-flash-thinking-exp-01-21",
 ];
@@ -413,6 +438,7 @@ export const THINKING_MODELS = [
 ];
 
 export const ALL_MODELS: ModelConfigurationParams[] = [
+  ...WRITER_MODELS,
   ...OPENAI_MODELS,
   ...ANTHROPIC_MODELS,
   ...FIREWORKS_MODELS,
@@ -422,6 +448,7 @@ export const ALL_MODELS: ModelConfigurationParams[] = [
   ...GROQ_MODELS,
 ];
 
+type WRITER_MODELS_NAMES = (typeof WRITER_MODELS)[number]["name"];
 type OPENAI_MODEL_NAMES = (typeof OPENAI_MODELS)[number]["name"];
 type ANTHROPIC_MODEL_NAMES = (typeof ANTHROPIC_MODELS)[number]["name"];
 type FIREWORKS_MODEL_NAMES = (typeof FIREWORKS_MODELS)[number]["name"];
@@ -430,6 +457,7 @@ type AZURE_MODEL_NAMES = (typeof AZURE_MODELS)[number]["name"];
 type OLLAMA_MODEL_NAMES = (typeof OLLAMA_MODELS)[number]["name"];
 type GROQ_MODEL_NAMES = (typeof GROQ_MODELS)[number]["name"];
 export type ALL_MODEL_NAMES =
+  | WRITER_MODELS_NAMES
   | OPENAI_MODEL_NAMES
   | ANTHROPIC_MODEL_NAMES
   | FIREWORKS_MODEL_NAMES
@@ -438,9 +466,9 @@ export type ALL_MODEL_NAMES =
   | OLLAMA_MODEL_NAMES
   | GROQ_MODEL_NAMES;
 
-export const DEFAULT_MODEL_NAME: ALL_MODEL_NAMES = OPENAI_MODELS[1].name;
+export const DEFAULT_MODEL_NAME: ALL_MODEL_NAMES = WRITER_MODELS[0].name;
 export const DEFAULT_MODEL_CONFIG: CustomModelConfig = {
-  ...OPENAI_MODELS[1].config,
-  temperatureRange: { ...OPENAI_MODELS[1].config.temperatureRange },
-  maxTokens: { ...OPENAI_MODELS[1].config.maxTokens },
+  ...WRITER_MODELS[0].config,
+  temperatureRange: { ...WRITER_MODELS[0].config.temperatureRange },
+  maxTokens: { ...WRITER_MODELS[0].config.maxTokens },
 };

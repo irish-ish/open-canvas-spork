@@ -88,6 +88,36 @@ export async function fixMisFormattedContextDocMessage(
         new HumanMessage({ ...message, id: newMsgId, content: newContent }),
       ];
     }
+  } else if (modelProvider === "writer") {
+    const newContentPromises = message.content.map(async (m) => {
+      if (
+        m.type === "document" &&
+        m.source.type === "base64" &&
+        m.source.data
+      ) {
+        changesMade = true;
+        // Anthropic format
+        return {
+          type: "text",
+          text: await convertPDFToText(m.source.data),
+        };
+      } else if (m.type === "application/pdf") {
+        changesMade = true;
+        // Gemini format
+        return {
+          type: "text",
+          text: await convertPDFToText(m.data),
+        };
+      }
+      return m;
+    });
+    const newContent = await Promise.all(newContentPromises);
+    if (changesMade) {
+      return [
+        new RemoveMessage({ id: message.id || "" }),
+        new HumanMessage({ ...message, id: newMsgId, content: newContent }),
+      ];
+    }
   } else if (modelProvider === "anthropic") {
     const newContent = message.content.map((m) => {
       if (m.type === "application/pdf") {

@@ -374,6 +374,8 @@ export function GraphProvider({ children }: { children: ReactNode }) {
         modelConfigs: threadData.modelConfigs,
       });
 
+      console.log("[Graph Context] Stream started:", stream);
+
       // Variables to keep track of content specific to this stream
       const prevCurrentContent = artifact
         ? artifact.contents.find((a) => a.index === artifact.currentIndex)
@@ -413,6 +415,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       let webSearchMessageId = "";
 
       for await (const chunk of stream) {
+        console.log("[Graph Context] Stream chunk:", stream);
         if (chunk.event === "error") {
           const errorMessage =
             chunk?.data?.message || "Unknown error. Please try again.";
@@ -442,6 +445,8 @@ export function GraphProvider({ children }: { children: ReactNode }) {
             runId = runId_;
             setRunId(runId);
           }
+
+          console.log("\nExtracted chunk fields: ", extractChunkFields(chunk));
 
           if (event === "on_chain_start") {
             if (langgraphNode === "updateHighlightedText") {

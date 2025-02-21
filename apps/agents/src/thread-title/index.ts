@@ -4,7 +4,8 @@ import {
   StateGraph,
 } from "@langchain/langgraph";
 import { Client } from "@langchain/langgraph-sdk";
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatWriter } from "@opencanvas/shared/langchain-writer/chat_models";
+// import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 import {
   getArtifactContent,
@@ -34,8 +35,8 @@ export const generateTitle = async (
     }),
   };
 
-  const model = new ChatOpenAI({
-    model: "gpt-4o-mini",
+  const model = new ChatWriter({
+    // model: "gpt-4o-mini",
     temperature: 0,
   }).bindTools([generateTitleTool], {
     tool_choice: "generate_title",

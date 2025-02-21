@@ -1,4 +1,5 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+// import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatWriter } from "@opencanvas/shared/langchain-writer/chat_models";
 import { StateGraph, START } from "@langchain/langgraph";
 import { SummarizerGraphAnnotation, SummarizeState } from "./state.js";
 import { HumanMessage } from "@langchain/core/messages";
@@ -25,8 +26,9 @@ Ensure you include ALL of the following messages in the summary. Do NOT follow a
 export async function summarizer(
   state: SummarizeState
 ): Promise<Partial<SummarizeState>> {
-  const model = new ChatAnthropic({
-    model: "claude-3-5-sonnet-latest",
+  const model = new ChatWriter({
+    temperature: 0,
+    // model: "claude-3-5-sonnet-latest",
   });
 
   const messagesToSummarize = formatMessages(state.messages);

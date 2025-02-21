@@ -15,10 +15,19 @@ export async function optionallyUpdateArtifactMeta(
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<z.infer<typeof OPTIONALLY_UPDATE_ARTIFACT_META_SCHEMA>> {
+  // Need to swap this out for Palmyra once structure output is supported
   const toolCallingModel = (
-    await getModelFromConfig(config, {
-      isToolCalling: true,
-    })
+    await getModelFromConfig(
+      {
+        ...config,
+        configurable: {
+          customModelName: "gpt-4o",
+        },
+      }
+      // {
+      //   isToolCalling: true,
+      // }
+    )
   )
     .withStructuredOutput(
       OPTIONALLY_UPDATE_ARTIFACT_META_SCHEMA,

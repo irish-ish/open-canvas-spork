@@ -61,6 +61,9 @@ export function ThreadProvider({ children }: { children: ReactNode }) {
     ""
   );
 
+  console.log("[ThreadProvider] DEFAULT_MODEL_NAME :: ", DEFAULT_MODEL_NAME);
+  console.log("[ThreadProvider] modelName :: ", modelName);
+
   const [modelConfigs, setModelConfigs] = useState<
     Record<ALL_MODEL_NAMES, CustomModelConfig>
   >(() => {
@@ -95,6 +98,7 @@ export function ThreadProvider({ children }: { children: ReactNode }) {
         }),
       };
     });
+    console.log("[ThreadProvider] initialConfigs :: ", initialConfigs);
     return initialConfigs;
   });
 
@@ -355,8 +359,16 @@ export function ThreadProvider({ children }: { children: ReactNode }) {
       const thread = await client.threads.get(id);
       if (thread.metadata && thread.metadata.customModelName) {
         if (thread.metadata.customModelName) {
+          console.log(
+            "[ThreadProvider] thread.metadata.customModelName :: ",
+            thread.metadata.customModelName
+          );
           setModelName(thread.metadata.customModelName as ALL_MODEL_NAMES);
         } else {
+          console.log(
+            "[ThreadProvider] setting from DEFAULT_MODEL_NAME :: ",
+            DEFAULT_MODEL_NAME
+          );
           setModelName(DEFAULT_MODEL_NAME);
         }
 

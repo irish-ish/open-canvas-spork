@@ -131,6 +131,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  console.log("assistants :: ", assistants);
+  console.log("selectedAssistant :: ", selectedAssistant);
+
   const deleteAssistant = async (assistantId: string): Promise<boolean> => {
     setIsDeletingAssistant(true);
     try {

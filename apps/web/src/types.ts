@@ -15,7 +15,7 @@ export interface ToolCall {
   result?: any;
 }
 
-export type Model = "gpt-4o-mini" | string; // Add other model options as needed
+export type Model = "palmyra-x-004" | string; // Add other model options as needed
 
 export type UserRules = {
   styleRules: string[];

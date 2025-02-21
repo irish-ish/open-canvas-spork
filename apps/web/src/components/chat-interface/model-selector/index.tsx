@@ -123,6 +123,8 @@ export default function ModelSelector({
   const [open, setOpen] = useState(false);
   const [openConfigModelId, setOpenConfigModelId] = useState<ALL_MODEL_NAMES>();
 
+  console.log("modelConfigs ------ ", modelConfigs);
+
   useEffect(() => {
     if (!user) return;
     setIsLangChainUser(user?.email?.endsWith("@langchain.dev") || false);
@@ -187,6 +189,12 @@ export default function ModelSelector({
     ) {
       return false;
     }
+    if (
+      model.name.includes("writer") &&
+      process.env.NEXT_PUBLIC_WRITER_ENABLED === "false"
+    ) {
+      return false;
+    }
 
     // By default, return true if the environment variable is not set or is set to true
     return true;
@@ -198,6 +206,9 @@ export default function ModelSelector({
     (m) => m.name === modelName && m.isNew
   );
 
+  const writerModelGroup = allAllowedModels.filter(
+    (m) => m.config.provider === "writer"
+  );
   const azureModelGroup = allAllowedModels.filter(
     (m) => m.config.provider === "azure_openai"
   );
@@ -244,6 +255,25 @@ export default function ModelSelector({
       <PopoverContent className="min-w-[180px] w-[280px] p-0 shadow-md rounded-md">
         <Command>
           <CommandList>
+            {writerModelGroup.length > 0 && (
+              <CommandGroup heading="Writer" className="w-full">
+                {writerModelGroup.map((model) => {
+                  const config = modelConfigs[model.name];
+                  return (
+                    <CommandModelItem
+                      key={model.name}
+                      model={model}
+                      handleModelChange={handleModelChange}
+                      config={config}
+                      selectedModelName={modelName}
+                      openConfigModelId={openConfigModelId}
+                      setOpenConfigModelId={setOpenConfigModelId}
+                      setModelConfig={setModelConfig}
+                    />
+                  );
+                })}
+              </CommandGroup>
+            )}
             {openaiModelGroup.length > 0 && (
               <CommandGroup heading="OpenAI" className="w-full">
                 {openaiModelGroup.map((model) => {

@@ -2,7 +2,8 @@ import {
   createContextDocumentMessages,
   getFormattedReflections,
   getModelConfig,
-  getModelFromConfig,
+  // getModelFromConfig,
+  getWriterModel,
   isUsingO1MiniModel,
   optionallyGetSystemPromptFromConfig,
 } from "../../../utils.js";
@@ -26,10 +27,12 @@ export const generateArtifact = async (
   const { modelName } = getModelConfig(config, {
     isToolCalling: true,
   });
-  const smallModel = await getModelFromConfig(config, {
+  const smallModel = getWriterModel(config, {
     temperature: 0.5,
     isToolCalling: true,
   });
+
+  console.log("CALLED:: generateArtifact :: smallModel ::", smallModel);
 
   const modelWithArtifactTool = smallModel.bindTools(
     [

@@ -1,5 +1,5 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { getModelFromConfig } from "../../utils.js";
+import { getWriterModel } from "../../utils.js";
 import {
   getArtifactContent,
   isArtifactMarkdownContent,
@@ -19,11 +19,15 @@ export const generateFollowup = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = await getModelFromConfig(config, {
+  const smallModel = getWriterModel(config, {
     maxTokens: 250,
-    // We say tool calling is true here because that'll cause it to use a small model
-    isToolCalling: true,
   });
+
+  // const smallModel = await getModelFromConfig(config, {
+  //   maxTokens: 250,
+  //   // We say tool calling is true here because that'll cause it to use a small model
+  //   isToolCalling: true,
+  // });
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

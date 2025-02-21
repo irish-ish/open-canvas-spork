@@ -9,7 +9,7 @@ import {
   getArtifactContent,
 } from "@opencanvas/shared/utils/artifacts";
 import { ArtifactCodeV3, ArtifactV3 } from "@opencanvas/shared/types";
-import { getModelConfig, getModelFromConfig } from "../../utils.js";
+import { getModelConfig, getWriterModel } from "../../utils.js";
 import {
   ADD_COMMENTS_TO_CODE_ARTIFACT_PROMPT,
   ADD_LOGS_TO_CODE_ARTIFACT_PROMPT,
@@ -27,7 +27,8 @@ export const rewriteCodeArtifactTheme = async (
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
   const { modelName } = getModelConfig(config);
-  const smallModel = await getModelFromConfig(config);
+  const smallModel = await getWriterModel(config);
+  // const smallModel = await getModelFromConfig(config);
 
   const currentArtifactContent = state.artifact
     ? getArtifactContent(state.artifact)

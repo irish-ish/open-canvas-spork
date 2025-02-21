@@ -14,7 +14,8 @@ import {
 import {
   ensureStoreInConfig,
   formatReflections,
-  getModelFromConfig,
+  // getModelFromConfig,
+  getWriterModel,
 } from "../../utils.js";
 import {
   CUSTOM_QUICK_ACTION_ARTIFACT_CONTENT_PROMPT,
@@ -43,9 +44,10 @@ export const customAction = async (
     throw new Error("No custom quick action ID found.");
   }
 
-  const smallModel = await getModelFromConfig(config, {
-    temperature: 0.5,
-  });
+  const smallModel = getWriterModel(config);
+  // const smallModel = await getModelFromConfig(config, {
+  //   temperature: 0.5,
+  // });
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

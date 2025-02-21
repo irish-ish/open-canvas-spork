@@ -6,7 +6,8 @@ import {
   ensureStoreInConfig,
   formatArtifactContentWithTemplate,
   formatReflections,
-  getModelFromConfig,
+  // getModelFromConfig,
+  getWriterModel,
   isUsingO1MiniModel,
 } from "../../utils.js";
 import { CURRENT_ARTIFACT_PROMPT, NO_ARTIFACT_PROMPT } from "../prompts.js";
@@ -22,7 +23,8 @@ export const replyToGeneralInput = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = await getModelFromConfig(config);
+  const smallModel = getWriterModel(config);
+  // const smallModel = await getModelFromConfig(config);
 
   const prompt = `You are an AI assistant tasked with responding to the users question.
   
